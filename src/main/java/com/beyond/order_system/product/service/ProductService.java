@@ -6,9 +6,18 @@ import com.beyond.order_system.member.repository.MemberRepository;
 import com.beyond.order_system.product.domain.Product;
 import com.beyond.order_system.product.dtos.ProductCreateDto;
 import com.beyond.order_system.product.dtos.ProductDetailDto;
+import com.beyond.order_system.product.dtos.ProductListDto;
+import com.beyond.order_system.product.dtos.ProductSearchDto;
 import com.beyond.order_system.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +27,8 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -70,6 +81,32 @@ public class ProductService {
         return ProductDetailDto.fromEntity(product);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ProductListDto> findAll(Pageable pageable, ProductSearchDto dto) {
+        Specification<Product> specification = new Specification<Product>() {
+            @Override
+            public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList = new ArrayList<>();
 
+                if (dto.getProductName() != null) {
+                    predicateList.add(criteriaBuilder.like(root.get("name"), "%" + dto.getProductName() + "%"));
+                }
+                if (dto.getCategory() != null) {
+                    predicateList.add(criteriaBuilder.equal(root.get("category"), dto.getCategory()));
+                }
+
+                Predicate[] predicateArr = new Predicate[predicateList.size()];
+                for (int i = 0; i < predicateArr.length; i++) {
+                    predicateArr[i] = predicateList.get(i);
+                }
+                Predicate predicate = criteriaBuilder.and(predicateArr);
+                return predicate;
+            }
+        };
+
+        Page<Product> productList = productRepository.findAll(specification, pageable);
+//        Page객체 안에 Entity -> Dto로 쉽게 변환할수 있는 편의 제공
+        return productList.map(p -> ProductListDto.fromEntity(p));
+    }
 
 }
