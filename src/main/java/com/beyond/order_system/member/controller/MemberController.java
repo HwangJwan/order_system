@@ -1,7 +1,10 @@
 package com.beyond.order_system.member.controller;
 
 import com.beyond.order_system.member.dtos.MemberCreateDto;
+import com.beyond.order_system.member.dtos.MemberLoginDto;
+import com.beyond.order_system.member.dtos.MemberTokenDto;
 import com.beyond.order_system.member.service.MemberService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,5 +24,9 @@ public class MemberController {
         return memberService.save(dto);
     }
 
+    @PostMapping("/doLogin")
+    public MemberTokenDto login(@RequestBody MemberLoginDto dto) {
+        return memberService.login(dto);
+    }
 
 }
