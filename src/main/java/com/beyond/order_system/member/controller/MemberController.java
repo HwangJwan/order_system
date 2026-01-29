@@ -1,14 +1,12 @@
 package com.beyond.order_system.member.controller;
 
-import com.beyond.order_system.member.dtos.MemberCreateDto;
-import com.beyond.order_system.member.dtos.MemberLoginDto;
-import com.beyond.order_system.member.dtos.MemberTokenDto;
+import com.beyond.order_system.member.dtos.*;
 import com.beyond.order_system.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/member")
@@ -29,4 +27,15 @@ public class MemberController {
         return memberService.login(dto);
     }
 
+    @GetMapping("/list")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<MemberListDto> findAll() {
+        return memberService.findAll();
+    }
+
+    @GetMapping("/myinfo")
+    @PreAuthorize("hasRole('USER')")
+    public MemberMyInfoDto findMyInfo() {
+        return memberService.findMyInfo();
+    }
 }

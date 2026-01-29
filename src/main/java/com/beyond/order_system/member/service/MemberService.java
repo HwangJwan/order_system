@@ -2,16 +2,16 @@ package com.beyond.order_system.member.service;
 
 import com.beyond.order_system.common.auth.JwtTokenProvider;
 import com.beyond.order_system.member.domain.Member;
-import com.beyond.order_system.member.dtos.MemberCreateDto;
-import com.beyond.order_system.member.dtos.MemberLoginDto;
-import com.beyond.order_system.member.dtos.MemberTokenDto;
+import com.beyond.order_system.member.dtos.*;
 import com.beyond.order_system.member.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,4 +44,13 @@ public class MemberService {
         return MemberTokenDto.fromEntity(jwtTokenProvider.createToken(member));
     }
 
+    public List<MemberListDto> findAll() {
+        return memberRepository.findAll().stream().map(m->MemberListDto.fromEntity(m)).toList();
+    }
+
+    public MemberMyInfoDto findMyInfo() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Member member=memberRepository.findByEmail(email).orElseThrow(()->new EntityNotFoundException("다시 시도해주세요."));
+        return MemberMyInfoDto.fromEntity(member);
+    }
 }
