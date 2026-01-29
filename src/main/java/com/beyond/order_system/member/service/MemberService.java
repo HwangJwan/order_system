@@ -44,13 +44,20 @@ public class MemberService {
         return MemberTokenDto.fromEntity(jwtTokenProvider.createToken(member));
     }
 
+    @Transactional(readOnly = true)
     public List<MemberListDto> findAll() {
         return memberRepository.findAll().stream().map(m->MemberListDto.fromEntity(m)).toList();
     }
 
+    @Transactional(readOnly = true)
     public MemberMyInfoDto findMyInfo() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         Member member=memberRepository.findByEmail(email).orElseThrow(()->new EntityNotFoundException("다시 시도해주세요."));
         return MemberMyInfoDto.fromEntity(member);
+    }
+
+    public MemberDetailDto findById(Long id) {
+        Member member=memberRepository.findById(id).orElseThrow(()->new EntityNotFoundException("없는 회원입니다."));
+        return MemberDetailDto.fromEntity(member);
     }
 }

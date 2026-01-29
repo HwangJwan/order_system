@@ -2,6 +2,7 @@ package com.beyond.order_system.member.controller;
 
 import com.beyond.order_system.member.dtos.*;
 import com.beyond.order_system.member.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class MemberController {
     }
 
     @PostMapping("/create")
-    public Long create(@RequestBody MemberCreateDto dto) {
+    public Long create(@RequestBody @Valid MemberCreateDto dto) {
         return memberService.save(dto);
     }
 
@@ -37,5 +38,11 @@ public class MemberController {
     @PreAuthorize("hasRole('USER')")
     public MemberMyInfoDto findMyInfo() {
         return memberService.findMyInfo();
+    }
+
+    @GetMapping("/detail/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public MemberDetailDto detail(@PathVariable Long id) {
+        return memberService.findById(id);
     }
 }
