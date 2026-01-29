@@ -1,18 +1,20 @@
 package com.beyond.order_system.member.domain;
 
 
+import com.beyond.order_system.ordering.domain.Ordering;
 import com.beyond.order_system.product.domain.Product;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter @ToString
+@Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +26,11 @@ public class Member {
     private String password;
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private Role role=Role.USER;
+    private Role role = Role.USER;
     @Builder.Default
-    private LocalDateTime created_time=LocalDateTime.now();
-//    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-//    private Product product;
+    private LocalDateTime createdTime = LocalDateTime.now();
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Product> productList;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Ordering> orderList;
 }
