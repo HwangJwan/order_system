@@ -1,6 +1,7 @@
 package com.beyond.order_system.product.controller;
 
 import com.beyond.order_system.product.dtos.ProductCreateDto;
+import com.beyond.order_system.product.dtos.ProductDetailDto;
 import com.beyond.order_system.product.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,4 +19,11 @@ public class ProductController {
     public Long productCreate(@ModelAttribute ProductCreateDto dto, @RequestParam(value = "productImage")MultipartFile productImage) {
         return productService.save(dto, productImage);
     }
+
+    @GetMapping("/detail/{id}")
+    public ProductDetailDto findById(@PathVariable Long id) {
+        return productService.findById(id);
+    }
+
+
 }

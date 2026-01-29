@@ -5,6 +5,7 @@ import com.beyond.order_system.member.domain.Member;
 import com.beyond.order_system.member.repository.MemberRepository;
 import com.beyond.order_system.product.domain.Product;
 import com.beyond.order_system.product.dtos.ProductCreateDto;
+import com.beyond.order_system.product.dtos.ProductDetailDto;
 import com.beyond.order_system.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,8 +64,11 @@ public class ProductService {
             return product.getId();
         }
     }
-
-
+    @Transactional(readOnly = true)
+    public ProductDetailDto findById(Long id) {
+        Product product=productRepository.findById(id).orElseThrow(()->new EntityNotFoundException("없는 상품입니다."));
+        return ProductDetailDto.fromEntity(product);
+    }
 
 
 
