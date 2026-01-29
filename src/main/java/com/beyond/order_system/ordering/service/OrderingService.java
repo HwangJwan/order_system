@@ -6,6 +6,7 @@ import com.beyond.order_system.member.service.MemberService;
 import com.beyond.order_system.ordering.domain.Ordering;
 import com.beyond.order_system.ordering.domain.OrderingDetails;
 import com.beyond.order_system.ordering.domain.Status;
+import com.beyond.order_system.ordering.dtos.MyOrderingListDto;
 import com.beyond.order_system.ordering.dtos.OrderingCreateDto;
 import com.beyond.order_system.ordering.dtos.OrderingDetailsListDto;
 import com.beyond.order_system.ordering.dtos.OrderingListDto;
@@ -69,5 +70,17 @@ public class OrderingService {
                         .productName(od.getProduct().getName())
                         .productCount(od.getQuantity())
                         .build()).toList()).build()).toList();
+    }
+
+    public List<MyOrderingListDto> findAllMine() {
+        String email=SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return orderingRepository.findAll().stream().filter(o->o.getMember().getEmail().equals(email)).map(o->MyOrderingListDto.builder()
+                .id(o.getId())
+                .memberEmail(email)
+                .orderDetails(o.getOrderDetails().stream().map(od->OrderingDetailsListDto.builder()
+                        .detailId(od.getId())
+                        .productName(od.getProduct().getName())
+                        .productCount(od.getQuantity())
+                        .build()).toList()).orderStatus(o.getOrderStatus()).build()).toList();
     }
 }

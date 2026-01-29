@@ -1,5 +1,6 @@
 package com.beyond.order_system.ordering.controller;
 
+import com.beyond.order_system.ordering.dtos.MyOrderingListDto;
 import com.beyond.order_system.ordering.dtos.OrderingCreateDto;
 import com.beyond.order_system.ordering.dtos.OrderingListDto;
 import com.beyond.order_system.ordering.service.OrderingService;
@@ -24,5 +25,10 @@ public class OrderingController {
     @GetMapping("/list")
     public List<OrderingListDto> findAll() {
         return orderingService.findAll();
+    }
+
+    @GetMapping("/myorders")
+    public List<MyOrderingListDto> findAllMine() {
+        return orderingService.findAllMine();
     }
 }
