@@ -1,11 +1,9 @@
 package com.beyond.order_system.ordering.controller;
 
 import com.beyond.order_system.ordering.dtos.OrderingCreateDto;
+import com.beyond.order_system.ordering.dtos.OrderingListDto;
 import com.beyond.order_system.ordering.service.OrderingService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +21,8 @@ public class OrderingController {
         return orderingService.save(dtoList);
     }
 
-
+    @GetMapping("/list")
+    public List<OrderingListDto> findAll() {
+        return orderingService.findAll();
+    }
 }

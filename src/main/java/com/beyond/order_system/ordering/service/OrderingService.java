@@ -7,6 +7,8 @@ import com.beyond.order_system.ordering.domain.Ordering;
 import com.beyond.order_system.ordering.domain.OrderingDetails;
 import com.beyond.order_system.ordering.domain.Status;
 import com.beyond.order_system.ordering.dtos.OrderingCreateDto;
+import com.beyond.order_system.ordering.dtos.OrderingDetailsListDto;
+import com.beyond.order_system.ordering.dtos.OrderingListDto;
 import com.beyond.order_system.ordering.repository.OrderingRepository;
 import com.beyond.order_system.product.domain.Product;
 import com.beyond.order_system.product.repository.ProductRepository;
@@ -55,5 +57,17 @@ public class OrderingService {
         }
         orderingRepository.save(ordering);
         return ordering.getId();
+    }
+
+    public List<OrderingListDto> findAll() {
+       return orderingRepository.findAll().stream().map(o->OrderingListDto.builder()
+                .id(o.getId())
+                .memberEmail(o.getMember().getEmail())
+                .orderStatus(o.getOrderStatus())
+                .orderDetails(o.getOrderDetails().stream().map(od-> OrderingDetailsListDto.builder()
+                        .detailId(od.getId())
+                        .productName(od.getProduct().getName())
+                        .productCount(od.getQuantity())
+                        .build()).toList()).build()).toList();
     }
 }
