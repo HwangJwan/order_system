@@ -4,6 +4,7 @@ import com.beyond.order_system.ordering.dtos.MyOrderingListDto;
 import com.beyond.order_system.ordering.dtos.OrderingCreateDto;
 import com.beyond.order_system.ordering.dtos.OrderingListDto;
 import com.beyond.order_system.ordering.service.OrderingService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class OrderingController {
     }
 
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody List<OrderingCreateDto> dtoList) {
         return orderingService.save(dtoList);
     }
