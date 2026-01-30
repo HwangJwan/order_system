@@ -89,7 +89,7 @@ public class ProductService {
                 List<Predicate> predicateList = new ArrayList<>();
 
                 if (dto.getProductName() != null) {
-                    predicateList.add(criteriaBuilder.like(root.get("name"), "%" + dto.getProductName() + "%"));
+                    predicateList.add(criteriaBuilder.equal(root.get("name"), dto.getProductName()));
                 }
                 if (dto.getCategory() != null) {
                     predicateList.add(criteriaBuilder.equal(root.get("category"), dto.getCategory()));

@@ -15,36 +15,27 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String name;
-
     @Min(0)
     private int price;
-
     private String category;
-
     @Min(0)
     private int stockQuantity;
-
     private String image_path;
-
     @Builder.Default
     private LocalDateTime createdTime = LocalDateTime.now();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    // 연관관계용 setter
-    public void setMember(Member member) {
-        this.member = member;
-    }
     public void updateProductImageUrl(String productImageUrl) {
         this.image_path=productImageUrl;
+    }
+    public void updateStockQuantity(int updatedStockQuantity) {
+        this.stockQuantity=updatedStockQuantity;
     }
 }

@@ -47,13 +47,17 @@ public class OrderingService {
 
         for (OrderingCreateDto dto : dtoList) {
             Product product = productRepository.findById(dto.getProductId())
-                    .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
+                    .orElseThrow(() -> new EntityNotFoundException("상품이 없습니다."));
 
             OrderingDetails detail = OrderingDetails.builder()
                     .product(product)
                     .quantity(dto.getProductCount())
                     .build();
-
+            int updatedStockQuantity=product.getStockQuantity()-dto.getProductCount();
+            if(updatedStockQuantity<0) {
+                throw new IllegalArgumentException("재고가 부족합니다. 현재"+product.getName() +"의 주문 가능 수량은 "+product.getStockQuantity()+"개입니다.");
+            }
+            product.updateStockQuantity(updatedStockQuantity);
             ordering.addDetail(detail);
         }
         orderingRepository.save(ordering);
