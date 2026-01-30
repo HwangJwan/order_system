@@ -35,7 +35,6 @@ public class MemberController {
     }
 
     @GetMapping("/myinfo")
-    @PreAuthorize("hasRole('USER')")
     public MemberMyInfoDto findMyInfo() {
         return memberService.findMyInfo();
     }
