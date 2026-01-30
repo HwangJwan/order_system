@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Ordering {
+public class    Ordering {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,15 +21,12 @@ public class Ordering {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
     @Enumerated(EnumType.STRING)
-    private Status orderStatus;
+    @Builder.Default
+    private Status orderStatus=Status.ORDERED;
     @Builder.Default
     private LocalDateTime createdTime = LocalDateTime.now();
-    @OneToMany(mappedBy = "ordering", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "ordering", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrderingDetails> orderDetails = new ArrayList<>();
 
-    public void addDetail(OrderingDetails detail) {
-        orderDetails.add(detail);
-        detail.setOrdering(this);
-    }
 }

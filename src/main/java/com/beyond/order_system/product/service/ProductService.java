@@ -47,7 +47,7 @@ public class ProductService {
         this.memberRepository = memberRepository;
     }
 
-    public Long save(ProductCreateDto dto, MultipartFile productImage) {
+    public Long save(ProductCreateDto dto) {
         Optional<Product> opt_product = productRepository.findByName(dto.getName());
         if (opt_product.isPresent()) {
             throw new IllegalArgumentException("이미 있는 상품입니다.");
@@ -56,15 +56,15 @@ public class ProductService {
             Member member=memberRepository.findByEmail(email).orElseThrow(()->new EntityNotFoundException("잘못된 접근입니다."));
             Product entityProduct = dto.toEntity(member);
             Product product = productRepository.save(entityProduct);
-            if (productImage != null) {
-                String fileName = "user-" + product.getName() + "-productImage-" + productImage.getOriginalFilename();
+            if (dto.getProductImage() != null) {
+                String fileName = "user-" + product.getName() + "-productImage-" + dto.getProductImage().getOriginalFilename();
                 PutObjectRequest request = PutObjectRequest.builder()
                         .bucket(bucket)
                         .key(fileName)
-                        .contentType(productImage.getContentType())
+                        .contentType(dto.getProductImage().getContentType())
                         .build();
                 try {
-                    s3Client.putObject(request, RequestBody.fromBytes(productImage.getBytes()));
+                    s3Client.putObject(request, RequestBody.fromBytes(dto.getProductImage().getBytes()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -89,7 +89,7 @@ public class ProductService {
                 List<Predicate> predicateList = new ArrayList<>();
 
                 if (dto.getProductName() != null) {
-                    predicateList.add(criteriaBuilder.equal(root.get("name"), dto.getProductName()));
+                    predicateList.add(criteriaBuilder.like(root.get("name"), "%"+dto.getProductName()+"%"));
                 }
                 if (dto.getCategory() != null) {
                     predicateList.add(criteriaBuilder.equal(root.get("category"), dto.getCategory()));

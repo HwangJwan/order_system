@@ -28,8 +28,8 @@ public class ProductController {
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long productCreate(@ModelAttribute ProductCreateDto dto, @RequestParam(value = "productImage")MultipartFile productImage) {
-        return productService.save(dto, productImage);
+    public Long productCreate(@ModelAttribute ProductCreateDto dto) {
+        return productService.save(dto);
     }
 
     @GetMapping("/detail/{id}")
@@ -38,7 +38,7 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public Page<ProductListDto> findAll(@PageableDefault(size=10, sort="id", direction = Sort.Direction.ASC) Pageable pageable, @ModelAttribute ProductSearchDto searchDto) {
+    public Page<ProductListDto> findAll(Pageable pageable,  ProductSearchDto searchDto) {
         return productService.findAll(pageable, searchDto);
     }
 }

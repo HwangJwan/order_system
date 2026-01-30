@@ -26,7 +26,4 @@ public class OrderingDetails {
     @Builder.Default
     private LocalDateTime created_time=LocalDateTime.now();
 
-    public void setOrdering(Ordering ordering) {
-        this.ordering = ordering;
-    }
 }

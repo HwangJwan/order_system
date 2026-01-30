@@ -19,7 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
-@EnableMethodSecurity   // PreAuthorize어노테이션을 사용하기 위한 설정
+@EnableMethodSecurity
 public class SecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
     private final JwtAuthenticationHandler jwtAuthenticationHandler;
@@ -40,7 +40,6 @@ public class SecurityConfig {
                 .sessionManagement(a->a.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e->e.authenticationEntryPoint(jwtAuthenticationHandler))
-                //        지정한 특정 url을 제외한 모든 요청에 대해서 authenticated(인증처리)하겠다라는 의미
                 .authorizeHttpRequests(a->a.requestMatchers("/member/create", "/member/doLogin", "/product/list").permitAll().anyRequest().authenticated())
                 .build();
     }

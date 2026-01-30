@@ -19,7 +19,6 @@ public class InitialDataLoad implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
-    //    CommandLineRunner를 구현함으로서 아래 run메소드가 스프링빈으로 등록되는 시점에 자동실행
     @Override
     public void run(String... args) throws Exception {
         if(memberRepository.findByEmail("admin@naver.com").isPresent()) return;

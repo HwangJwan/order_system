@@ -16,5 +16,5 @@ public class MyOrderingListDto {
     private Long id;
     private String memberEmail;
     private Status orderStatus;
-    List<OrderingDetailsListDto> orderDetails;
+    private List<OrderingDetailsListDto> orderDetails;
 }

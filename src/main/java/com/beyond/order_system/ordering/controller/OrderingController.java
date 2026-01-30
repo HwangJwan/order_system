@@ -30,7 +30,7 @@ public class OrderingController {
     }
 
     @GetMapping("/myorders")
-    public List<MyOrderingListDto> findAllMine() {
+    public List<OrderingListDto> findAllMine() {
         return orderingService.findAllMine();
     }
 }
