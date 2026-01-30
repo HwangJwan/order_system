@@ -53,6 +53,7 @@ public class OrderingService {
                     .product(product)
                     .quantity(dto.getProductCount())
                     .build();
+//            재고 처리
             int updatedStockQuantity=product.getStockQuantity()-dto.getProductCount();
             if(updatedStockQuantity<0) {
                 throw new IllegalArgumentException("재고가 부족합니다. 현재"+product.getName() +"의 주문 가능 수량은 "+product.getStockQuantity()+"개입니다.");
@@ -64,6 +65,7 @@ public class OrderingService {
         return ordering.getId();
     }
 
+    @Transactional(readOnly = true)
     public List<OrderingListDto> findAll() {
        return orderingRepository.findAll().stream().map(o->OrderingListDto.builder()
                 .id(o.getId())
@@ -76,6 +78,7 @@ public class OrderingService {
                         .build()).toList()).build()).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<MyOrderingListDto> findAllMine() {
         String email=SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         return orderingRepository.findAll().stream().filter(o->o.getMember().getEmail().equals(email)).map(o->MyOrderingListDto.builder()
