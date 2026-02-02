@@ -1,5 +1,7 @@
 package com.beyond.order_system.member.controller;
 
+import com.beyond.order_system.common.auth.JwtTokenProvider;
+import com.beyond.order_system.member.domain.Member;
 import com.beyond.order_system.member.dtos.*;
 import com.beyond.order_system.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -14,9 +16,11 @@ import java.util.List;
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping("/create")
@@ -45,5 +49,15 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     public MemberDetailDto detail(@PathVariable Long id) {
         return memberService.findById(id);
+    }
+
+    @PostMapping("/refresh-at")
+    public MemberTokenDto refreshAt(@RequestBody RefreshTokenDto dto) {
+//        rt 검증(1. 토큰 자체 검증 2. redis 조회 검증)
+        Member member=jwtTokenProvider.validateRt(dto.getRefreshToken());
+
+//        at 신규 생성
+        String accessToken = jwtTokenProvider.createToken(member);
+        return MemberTokenDto.builder().accessToken(accessToken).refreshToken(null).build();
     }
 }

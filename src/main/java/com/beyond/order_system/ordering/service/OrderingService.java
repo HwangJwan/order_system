@@ -1,5 +1,6 @@
 package com.beyond.order_system.ordering.service;
 
+import com.beyond.order_system.common.service.SseAlarmService;
 import com.beyond.order_system.member.domain.Member;
 import com.beyond.order_system.member.repository.MemberRepository;
 import com.beyond.order_system.member.service.MemberService;
@@ -27,11 +28,13 @@ public class OrderingService {
     private final OrderingRepository orderingRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
+    private final SseAlarmService sseAlarmService;
 
-    public OrderingService(OrderingRepository orderingRepository, MemberRepository memberRepository, ProductRepository productRepository) {
+    public OrderingService(OrderingRepository orderingRepository, MemberRepository memberRepository, ProductRepository productRepository, SseAlarmService sseAlarmService) {
         this.orderingRepository = orderingRepository;
         this.memberRepository = memberRepository;
         this.productRepository = productRepository;
+        this.sseAlarmService = sseAlarmService;
     }
 
     public Long save(List<OrderingCreateDto> dtoList) {
@@ -47,20 +50,23 @@ public class OrderingService {
         for (OrderingCreateDto dto : dtoList) {
             Product product = productRepository.findById(dto.getProductId())
                     .orElseThrow(() -> new EntityNotFoundException("상품이 없습니다."));
+//            재고 처리
+            if(product.getStockQuantity()<dto.getProductCount()) {
+                throw new IllegalArgumentException("재고가 부족합니다. 현재 "+product.getName() +"의 주문 가능 수량은 "+product.getStockQuantity()+"개입니다.");
+            }
 
+            product.updateStockQuantity(dto.getProductCount());
             OrderingDetails detail = OrderingDetails.builder()
+                    .ordering(ordering)
                     .product(product)
                     .quantity(dto.getProductCount())
                     .build();
-//            재고 처리
-            int updatedStockQuantity=product.getStockQuantity()-dto.getProductCount();
-            if(updatedStockQuantity<0) {
-                throw new IllegalArgumentException("재고가 부족합니다. 현재"+product.getName() +"의 주문 가능 수량은 "+product.getStockQuantity()+"개입니다.");
-            }
-            product.updateStockQuantity(updatedStockQuantity);
             ordering.getOrderDetails().add(detail);
         }
         orderingRepository.save(ordering);
+//        주문 성공 시 admin 유저에게 알림메시지 전송
+        String message=ordering.getId()+"번 주문이 들어왔습니다";;
+        sseAlarmService.sendMessage("admin@naver.com", email,message);
         return ordering.getId();
     }
 

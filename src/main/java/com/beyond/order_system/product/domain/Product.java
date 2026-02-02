@@ -35,7 +35,7 @@ public class Product {
     public void updateProductImageUrl(String productImageUrl) {
         this.image_path=productImageUrl;
     }
-    public void updateStockQuantity(int updatedStockQuantity) {
-        this.stockQuantity=updatedStockQuantity;
+    public void updateStockQuantity(int orderQuantity) {
+        this.stockQuantity=this.stockQuantity-orderQuantity;
     }
 }

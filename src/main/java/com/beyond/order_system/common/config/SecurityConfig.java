@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .sessionManagement(a->a.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e->e.authenticationEntryPoint(jwtAuthenticationHandler))
-                .authorizeHttpRequests(a->a.requestMatchers("/member/create", "/member/doLogin", "/product/list").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(a->a.requestMatchers("/member/create", "/member/doLogin", "/product/list", "/member/refresh-at").permitAll().anyRequest().authenticated())
                 .build();
     }
 

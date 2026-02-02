@@ -41,7 +41,9 @@ public class MemberService {
     public MemberTokenDto login(MemberLoginDto dto) {
         Optional<Member> opt_member = memberRepository.findByEmail(dto.getEmail());
         Member member=opt_member.orElseThrow(()->new EntityNotFoundException("잘못된 입력입니다."));
-        return MemberTokenDto.fromEntity(jwtTokenProvider.createToken(member));
+        String accessToken = jwtTokenProvider.createToken(member);
+        String refreshToken = jwtTokenProvider.createRtToken(member);
+        return MemberTokenDto.fromEntity(accessToken,refreshToken);
     }
 
     @Transactional(readOnly = true)

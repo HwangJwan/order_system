@@ -14,7 +14,7 @@ public class MemberTokenDto {
     private String accessToken;
     private String refreshToken;
 
-    public static MemberTokenDto fromEntity(String token) {
-        return MemberTokenDto.builder().accessToken(token).build();
+    public static MemberTokenDto fromEntity(String accessToken, String refreshToken) {
+        return MemberTokenDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 }
