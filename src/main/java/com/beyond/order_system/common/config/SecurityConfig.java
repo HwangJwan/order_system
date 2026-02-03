@@ -34,13 +34,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .cors(c->c.configurationSource(corsConfigurationSource()))
+                .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(a->a.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(a -> a.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(e->e.authenticationEntryPoint(jwtAuthenticationHandler))
-                .authorizeHttpRequests(a->a.requestMatchers("/member/create", "/member/doLogin", "/product/list", "/member/refresh-at").permitAll().anyRequest().authenticated())
+                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationHandler))
+                .authorizeHttpRequests(a -> a.requestMatchers("/member/create"
+                        , "/member/doLogin", "/product/list", "/member/refresh-at",
+//                        swagger 사용을 위한 인증 예외처리
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html").permitAll().anyRequest().authenticated())
                 .build();
     }
 

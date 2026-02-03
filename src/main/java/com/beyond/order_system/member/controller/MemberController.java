@@ -4,6 +4,7 @@ import com.beyond.order_system.common.auth.JwtTokenProvider;
 import com.beyond.order_system.member.domain.Member;
 import com.beyond.order_system.member.dtos.*;
 import com.beyond.order_system.member.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,9 @@ public class MemberController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "회원가입", description = "이메일, 비밀번호를 통한 회원가입 "
+    )
     public Long create(@RequestBody @Valid MemberCreateDto dto) {
         return memberService.save(dto);
     }
