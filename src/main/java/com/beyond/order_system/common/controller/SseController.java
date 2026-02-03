@@ -30,4 +30,11 @@ public class SseController {
         return sseEmitter;
     }
 
+    @GetMapping("/disconnect")
+    public void disconnect() throws IOException {
+        String email= SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+       sseEmitterRegistry.removeEmitter(email);
+    }
+
+
 }
