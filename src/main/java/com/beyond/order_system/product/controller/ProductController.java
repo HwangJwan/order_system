@@ -1,9 +1,6 @@
 package com.beyond.order_system.product.controller;
 
-import com.beyond.order_system.product.dtos.ProductCreateDto;
-import com.beyond.order_system.product.dtos.ProductDetailDto;
-import com.beyond.order_system.product.dtos.ProductListDto;
-import com.beyond.order_system.product.dtos.ProductSearchDto;
+import com.beyond.order_system.product.dtos.*;
 import com.beyond.order_system.product.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,5 +37,11 @@ public class ProductController {
     @GetMapping("/list")
     public Page<ProductListDto> findAll(Pageable pageable,  ProductSearchDto searchDto) {
         return productService.findAll(pageable, searchDto);
+    }
+
+    @PutMapping("/update/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void update(@PathVariable Long id, @ModelAttribute ProductUpdateDto dto) {
+        productService.update(id,dto);
     }
 }

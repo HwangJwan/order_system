@@ -1,6 +1,7 @@
 package com.beyond.order_system.product.domain;
 
 import com.beyond.order_system.member.domain.Member;
+import com.beyond.order_system.product.dtos.ProductUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
@@ -37,5 +38,11 @@ public class Product {
     }
     public void updateStockQuantity(int orderQuantity) {
         this.stockQuantity=this.stockQuantity-orderQuantity;
+    }
+    public void updateProduct(ProductUpdateDto dto) {
+        this.name=dto.getName();
+        this.category=dto.getCategory();
+        this.stockQuantity=dto.getStockQuantity();
+        this.price=dto.getPrice();
     }
 }

@@ -25,7 +25,7 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int port;
 
-    //    연결 빈 객체
+//    연결 빈 객체
     @Bean
 //    Qualifier : 같은 Bean 객체가 여러개 있을 경우 Bean객체를 구분하기 위한 어노테이션
 //    현재 트렌드는 0번 DB만 사용, Redis 컨테이너를 여러 개 띄움.
@@ -35,7 +35,7 @@ public class RedisConfig {
         configuration.setHostName(host);
         configuration.setPort(port);
         configuration.setDatabase(0);
-        return new LettuceConnectionFactory();
+        return new LettuceConnectionFactory(configuration);
     }
 
     //    탬플릿 빈 객체
@@ -59,7 +59,7 @@ public class RedisConfig {
         configuration.setHostName(host);
         configuration.setPort(port);
         configuration.setDatabase(1);
-        return new LettuceConnectionFactory();
+        return new LettuceConnectionFactory(configuration);
     }
 
     @Bean
@@ -84,7 +84,7 @@ public class RedisConfig {
         configuration.setHostName(host);
         configuration.setPort(port);
 //        redis pub/sub기능은 db에 값을 저장하는 기능이 아니므로, 특정 db에 의존적이지 않음.
-        return new LettuceConnectionFactory();
+        return new LettuceConnectionFactory(configuration);
     }
 
     @Bean
